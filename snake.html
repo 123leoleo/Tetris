@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Snake Game (use the arrowkeys)</title>
+  <style>
+    html,
+    body {
+      height: 70%;
+      margin: 0;
+    }
+
+    body {
+      background: black;
+      margin-top:0px;
+      
+     
+      
+    }
+
+    canvas {
+      border: 1px solid white;
+      margin:0 auto;
+      display:flex;
+     
+    }
+
+    .Schrift {
+      color: white;
+      margin-right: 0px;
+      font-family: 'Times New Roman', Times, serif;
+      font-size: 30px;
+      
+      text-align: center;
+      
+     
+      
+    }
+
+    .Schrift2 {
+      color: white;
+      margin-left: 0px;
+      
+      display:flex;
+      align-items: right;
+      justify-content: right;
+
+    }
+
+    .Tabelle {
+      color: white;
+      font-family: 'Times New Roman', Times, serif;
+      display:flex;
+      align-items: center;
+      justify-content: center;
+
+
+    }
+
+    .div {
+      margin-left: 0px;
+      font-size: 32px;
+    }
+    .Schrift3{
+      color:white;
+      text-align: center;
+      font-size:30px;
+      margin-bottom: 2px;
+
+
+    }
+    p{
+      color:white;
+      
+
+    }
+    .red{
+      background-color:red;
+      width:10px;
+      height:10px;
+      display:block;
+
+    }
+    .green{
+      background-color:#069d2e;
+      width:10px;
+      height:10px;
+      display:block;
+    }
+    .purple{
+      background-color:#25d0e3;
+      width:10px;
+      height:10px;
+      display:block;
+    }
+    .blue{
+      background-color:#e902fe;
+      width:10px;
+      height:10px;
+      display:block;
+    }
+    .white{
+      background-color:white;
+      width:10px;
+      height:10px;
+      display:block;
+    }
+    .yellow{
+      background-color:yellow;
+      width:10px;
+      height:10px;
+      display:block;
+    }
+  </style>
+</head>
+
+<body>
+  <div>
+    
+  </div>
+    <h1 class="Schrift">Snake Game by Leo</h1>
+  <canvas width="400" height="400" id="game"></canvas>
+
+  <div class="div">
+    <table class="Tabelle">
+      <tr>
+        <td>Current Length:</td>
+        <td id="score">0</td>
+       </tr>
+       
+    </table>
+  </div>
+  <script>
+    var canvas = document.getElementById('game');
+    var context = canvas.getContext('2d');
+    var grid = 16;
+    var count = 0;
+    //var myScore;
+    //var myhighscore;
+    var snake = {
+      x: 160,
+      y: 160,
+
+
+      dx: grid,
+      dy: 0,
+
+
+      cells: [],
+
+      maxCells: 2
+    };
+    var apple = { x: 320,y: 320};
+
+    var poisioned_apple = {x: 320,y: 320 };
+
+    var superapple = {x:160,y: 160};
+
+    var negativeapple = {x:320,y:320};
+
+    var portalapple = {x:320,y:320};
+
+    var portalapple2 = {x:320,y:320};
+
+    function getRandomInt(min, max) {
+      return Math.floor(Math.random() * (max - min)) + min;
+
+      this.hitBottom();
+      this.hitroof();
+    }
+
+    function loop() {
+      document.getElementById('score').innerHTML = snake.maxCells;
+      requestAnimationFrame(loop);
+      this.hitBottom = function () {
+        var rockbottom = myGameArea.canvas.height - this.height;
+        if (this.y > 402) {
+          this.y = 402;
+
+        }
+      }
+      
+      this.hitroof = function () {
+        console.log(this.y);
+        if (this.y < 0) {
+          this.y = 0;
+
+        }
+      }
+
+      if (++count < 6) {
+        return;
+      }
+      count = 0;
+      context.clearRect(0, 0, canvas.width, canvas.height);
+
+      snake.x += snake.dx;
+      snake.y += snake.dy;
+      if (snake.x < 0) {
+        snake.x = 160;
+          snake.y = 160;
+          snake.cells = [];
+          snake.maxCells = 2;
+          snake.dx = grid;
+          snake.dy = 0;
+          apple.x = getRandomInt(0, 25) * grid;
+          apple.y = getRandomInt(0, 25) * grid;
+      }
+      if (snake.y > 384) {
+        snake.x = 160;
+          snake.y = 160;
+          snake.cells = [];
+          snake.maxCells = 2;
+          snake.dx = grid;
+          snake.dy = 0;
+          apple.x = getRandomInt(0, 25) * grid;
+          apple.y = getRandomInt(0, 25) * grid;
+      }
+      if (snake.x > 384) {
+        snake.x = 160;
+          snake.y = 160;
+          snake.cells = [];
+          snake.maxCells = 2;
+          snake.dx = grid;
+          snake.dy = 0;
+          apple.x = getRandomInt(0, 25) * grid;
+          apple.y = getRandomInt(0, 25) * grid;
+      }
+      if (snake.y < 0) {
+        snake.x = 160;
+          snake.y = 160;
+          snake.cells = [];
+          snake.maxCells = 2;
+          snake.dx = grid;
+          snake.dy = 0;
+          apple.x = getRandomInt(0, 25) * grid;
+          apple.y = getRandomInt(0, 25) * grid;
+      }
+
+
+      snake.cells.unshift({ x: snake.x, y: snake.y });
+
+      if (snake.cells.length > snake.maxCells) {
+        snake.cells.pop();
+      }
+
+      context.fillStyle = 'red';
+      context.fillRect(apple.x, apple.y, grid - 1, grid - 1);
+
+      context.fillStyle = 'white';
+      context.fillRect(portalapple.x, portalapple.y, grid - 1, grid - 1);
+
+      context.fillStyle = 'yellow';
+      context.fillRect(portalapple2.x, portalapple2.y, grid - 1, grid - 1);
+
+      context.fillStyle = '#25d0e3';
+      context.fillRect(negativeapple.x, negativeapple.y, grid - 1, grid - 1);
+
+      context.fillStyle = '#069d2e';
+      context.fillRect(superapple.x, superapple.y, grid - 1, grid - 1);
+
+      context.fillStyle = '#e902fe';
+      context.fillRect(poisioned_apple.x, poisioned_apple.y, grid - 1, grid - 1);
+
+      context.fillStyle = 'green';
+      snake.cells.forEach(function (cell, index) {
+        context.fillRect(cell.x, cell.y, grid - 1, grid - 1);
+
+        if (cell.x === apple.x && cell.y === apple.y) {
+          snake.maxCells=snake.maxCells+2;
+
+          apple.x = getRandomInt(0, 25) * grid;
+          apple.y = getRandomInt(0, 25) * grid;
+        }
+        if (cell.x === portalapple.x && cell.y === portalapple.y) {
+          snake.x = 0
+          snake.y = 0
+
+          portalapple.x = getRandomInt(0, 25) * grid;
+          portalapple.y = getRandomInt(0, 25) * grid;
+        }
+        if (cell.x === portalapple2.x && cell.y === portalapple2.y) {
+          snake.x = 384
+          snake.y = 384
+
+          portalapple2.x = getRandomInt(0, 25) * grid;
+          portalapple2.y = getRandomInt(0, 25) * grid;
+        }
+        if (cell.x === negativeapple.x && cell.y === negativeapple.y) {
+          snake.maxCells=snake.maxCells-5;
+
+          negativeapple.x = getRandomInt(0, 25) * grid;
+          negativeapple.y = getRandomInt(0, 25) * grid;
+        }
+        
+        if (cell.x === superapple.x && cell.y === superapple.y) {
+          snake.maxCells=snake.maxCells+3;
+
+          superapple.x = getRandomInt(0, 25) * grid;
+          superapple.y = getRandomInt(0, 25) * grid;
+        }
+        if (cell.x === poisioned_apple.x && cell.y === poisioned_apple.y) {
+          snake.maxCells--;
+          snake.x = 160;
+          snake.y = 160;
+          snake.cells = [];
+          snake.maxCells = 2;
+          snake.dx = grid;
+          snake.dy = 0;
+          apple.x = getRandomInt(0, 25) * grid;
+          apple.y = getRandomInt(0, 25) * grid;
+          
+
+          poisioned_apple.x = getRandomInt(0, 25) * grid;
+          poisioned_apple.y = getRandomInt(0, 25) * grid;
+          document.getElementById('death').innerHTML = "You died to an poisioned apple!";
+        }
+
+        for (var i = index + 1; i < snake.cells.length; i++) {
+
+
+          if (cell.x === snake.cells[i].x && cell.y === snake.cells[i].y) {
+            snake.x = 160;
+            snake.y = 160;
+            snake.cells = [];
+            snake.maxCells = 2;
+            snake.dx = grid;
+            snake.dy = 0;
+            apple.x = getRandomInt(0, 25) * grid;
+            apple.y = getRandomInt(0, 25) * grid;
+            poisioned_apple.x = getRandomInt(0, 25) * grid;
+            poisioned_apple.y = getRandomInt(0, 25) * grid;
+          }
+        }
+      });
+    } // end of loop
+
+    document.addEventListener('keydown', function (e) {
+
+      if (e.which === 37 && snake.dx === 0) {
+        snake.dx = -grid;
+        snake.dy = 0;
+      }
+
+      else if (e.which === 38 && snake.dy === 0) {
+        snake.dy = -grid;
+        snake.dx = 0;
+      }
+
+      else if (e.which === 39 && snake.dx === 0) {
+        snake.dx = grid;
+        snake.dy = 0;
+      }
+
+      else if (e.which === 40 && snake.dy === 0) {
+        snake.dy = grid;
+        snake.dx = 0;
+      }
+    });
+
+    requestAnimationFrame(loop);
+
+  </script>
+  <p id="death" class="Schrift3">Stay alive!</p>
+  <div class="red" ></div>
+   <p>increases lenght by two blocks</p>    
+   <div class="green" ></div>  
+   <p>increases lenght by three blocks</p> 
+   <div class="purple" ></div>
+   <p>reduces lenght by five blocks</p> 
+   <div class="blue" ></div>
+   <p>kills you</p>
+   <div class="white" ></div>
+   <p>opens a porttal to x = 0 ; y = 0</p>
+   <div class="yellow" ></div>
+   <p>opens a porttal to x = 384 ; y = 384</p>
+
+</body>
+
+</html>

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+
+    <title>Snake Game</title>
+
+
+</head>
+
+
+<style>
+    canvas {
+        width: 400px;
+        height: 400px;
+        background-color: black;
+        border: 1px solid white;
+        margin-top: 200px;
+    }
+
+    body {
+        background: black;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+</style>
+
+
+
+<body>
+    <canvas width="400" height="400" id="game"></canvas>
+    <script>
+
+        var canvas = document.getElementById('game');
+        var context = canvas.getContext('2d');
+        var grid = 16;
+        var count = 0;
+        var myScore;
+        var myhighscore;
+        var snake = {
+            x: 160,
+            y: 160,
+            dx: grid,
+            dy: 0,
+            cells: [],
+            maxCells: 4
+        };
+        var apple = {
+            x: 320,
+            y: 320
+        };
+        var poisioned_apple = {
+            x: 230,
+            y: 130
+        };
+        var poisioned_apple2 = {
+            x: 130,
+            y: 330
+        };
+
+        function getRandomInt(min, max) {
+            return Math.floor(Math.random() * (max - min)) + min;
+            //this.hitBottom();
+            //this.hitroof();
+        }
+
+        function loop() {
+            requestAnimationFrame(loop);
+            schleife();
+            
+            //this.hitBottom = function() {
+            //var rockbottom = myGameArea.canvas.height - this.height;
+
+
+            // if (this.y > 402) { this.y = 402;}
+        }
+        //this.hitroof = function() {console.log(this.y); if (this.y < 0){ this.y=0;}}
+
+
+
+
+        //if (++count < 6) {
+        count = 0;
+        function schleife() {
+
+            if (++count < 6) {
+                return;}
+                context.clearRect(0, 0, canvas.width, canvas.height);
+
+                snake.x += snake.dx;
+                snake.y += snake.dy;
+                if (snake.x < 0) {
+                    snake.x = 0;
+                }
+                if (snake.y > 400) {
+                    snake.y = 400 - grid;
+                }
+                if (snake.x > 400) {
+                    snake.x = 400 - grid;
+                }
+                if (snake.y < 0) {
+                    snake.y = 0;
+                }
+
+           
+            count = 0;
+            snake.cells.unshift({ x: snake.x, y: snake.y });
+
+            if (snake.cells.length > snake.maxCells) {
+                snake.cells.pop();
+            }
+
+            context.fillStyle = 'red';
+            context.fillRect(apple.x, apple.y, grid - 1, grid - 1);
+
+            context.fillStyle = 'yellow';
+            context.fillRect(poisioned_apple.x, poisioned_apple.y, grid - 1, grid - 1);
+
+            context.fillStyle = 'yellow';
+            context.fillRect(poisioned_apple2.x, poisioned_apple.y, grid - 1, grid - 1);
+
+            context.fillStyle = 'green';
+            snake.cells.forEach(function (cell, index) {
+
+
+                context.fillRect(cell.x, cell.y, grid - 1, grid - 1);
+
+                if (cell.x === apple.x && cell.y === apple.y) {
+                    snake.maxCells++;
+
+                    apple.x = getRandomInt(0, 25) * grid;
+                    apple.y = getRandomInt(0, 25) * grid;
+                }
+                context.fillRect(cell.x, cell.y, grid - 1, grid - 1);
+
+                if (cell.x == poisioned_apple && cell.y == poisioned_apple) {
+                    snake.maxCells++;
+
+                    apple.x = getRandomInt(0, 25) * grid;
+                    apple.y = getRandomInt(0, 25) * grid;
+                
+                    for (var i = index + 1; i < snake.cells.length; i++) {
+                        // for (var i = index + 1; i < snake.cells.length; i++) {
+
+
+                        if (cell.x === snake.cells[i].x && cell.y === snake.cells[i].y) {
+                            snake.x = 160;
+                            snake.y = 160;
+                            snake.cells = [];
+                            snake.maxCells = 4;
+                            snake.dx = grid;
+                            snake.dy = 0;
+                            apple.x = getRandomInt(0, 25) * grid;
+                            apple.y = getRandomInt(0, 25) * grid;
+                        }
+                    }
+                }
+            });
+
+
+
+            document.addEventListener('keydown', function (e) {
+
+                if (e.which === 37 && snake.dx === 0) {
+                    snake.dx = -grid;
+                    snake.dy = 0;
+                }
+
+                else if (e.which === 38 && snake.dy === 0) {
+                    snake.dy = -grid;
+                    snake.dx = 0;
+                }
+
+                else if (e.which === 39 && snake.dx === 0) {
+                    snake.dx = grid;
+                    snake.dy = 0;
+                }
+
+                else if (e.which === 40 && snake.dy === 0) {
+                    snake.dy = grid;
+                    snake.dx = 0;
+                }
+            });
+        }
+        requestAnimationFrame(loop);      
+    </script>
+
+</body>
+
+</html>

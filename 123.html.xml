@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<note>
+<to>evryone</to>
+<from>Leo</from>
+<heading>Message</heading>
+<style>
+.schrift{
+margin: 0 auto;
+color: blue;
+
+}
+</style>
+
+<body class="schrift">hello world</body>
+</note>

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<style>
+canvas {
+    border:10px solid #8a0829;
+    background-color: #fa5858;
+    margin-left:0px;
+ 
+}
+.myScore{
+    text-align: center;
+
+}
+.knopf{
+    margin-left:0px;
+    width:800px;
+    height:100px;
+    font-size:50px;
+    background-color:#7401df
+
+
+}
+.highscore{
+    text-align: right;
+
+}
+
+
+
+.schrift{
+   
+    font-size: 50px;
+}
+</style>
+</head>
+<body onload="startGame()">
+<script>
+var figur = new Image();
+figur.src = "images/plane.png";
+var pipeNorth = new Image();
+pipeNorth.src = "images/pipeNorth2.png";
+var pipeSouth = new Image();
+pipeSouth.src = "images/pipeSüden.png";
+var myGamePiece;
+var myObstacles = [];
+var myScore;
+var myhighscore;
+
+function startGame() {
+    myGamePiece = new component(50, 40, "#2e64fe", 10, 120, "figur");
+    myGamePiece.gravity = 0.5;
+    myScore = new component ("30px", "Consolas", "black", 280, 40, "text");
+    myhighscore = new component ("20px", "Consolas", "black", 280, 80, "text");
+    myGameArea.start();
+}
+
+var myGameArea = {
+    canvas : document.createElement("canvas"),
+    start : function() {
+        this.canvas.width = 1870;
+        this.canvas.height = 700;
+        this.context = this.canvas.getContext("2d");
+        document.body.insertBefore(this.canvas, document.body.childNodes[0]);
+        this.frameNo = 0;
+        this.interval = setInterval(updateGameArea, 10);
+        },
+    clear : function() {
+        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    }
+}
+
+function component(width, height, color, x, y, type) {
+    this.type = type;
+    this.score = 0;
+    this.width = width;
+    this.height = height;
+    this.speedX = 0;
+    this.speedY = 0;    
+    this.x = x;
+    this.y = y;
+    this.gravity = 0;
+    this.gravitySpeed = 0;
+    this.update = function() {
+        ctx = myGameArea.context;
+        if (this.type == "text") {
+            ctx.font = this.width + " " + this.height;
+            ctx.fillStyle = color;
+            ctx.fillText(this.text, this.x, this.y);
+        } else if (this.type == "figur") {
+            ctx.drawImage(figur, this.x, this.y, this.width, this.height);
+        } else if (this.type == "pipeNorth") {
+            ctx.drawImage(pipeNorth, this.x, this.y, this.width, this.height);
+        } else if (this.type == "pipeSouth") {
+            ctx.drawImage(pipeSouth, this.x, this.y, this.width, this.height);
+        } else {
+            ctx.fillStyle = color;
+            ctx.fillRect(this.x, this.y, this.width, this.height);
+        }
+    }
+    this.newPos = function() {
+        this.gravitySpeed += this.gravity;
+        this.x += this.speedX;
+        this.y += this.speedY + this.gravitySpeed;
+        this.hitBottom();
+        this.hitroof();
+    }
+    this.hitBottom = function() {
+        var rockbottom = myGameArea.canvas.height - this.height;
+        if (this.y > rockbottom) {
+            this.y = rockbottom;
+            this.gravitySpeed = 0;
+        }
+    }
+    this.hitroof = function() {
+        if (this.y < 0){
+            this.y=0;
+            this.gravitySpeed = 0;
+        }
+        }
+    this.crashWith = function(otherobj) {
+        var myleft = this.x;
+        var myright = this.x + (this.width);
+        var mytop = this.y;
+        var mybottom = this.y + (this.height);
+        var otherleft = otherobj.x;
+        var otherright = otherobj.x + (otherobj.width);
+        var othertop = otherobj.y;
+        var otherbottom = otherobj.y + (otherobj.height);
+        var crash = true;
+        if ((mybottom < othertop) || (mytop > otherbottom) || (myright < otherleft) || (myleft > otherright)) {
+            crash = false;
+        }
+        
+        return crash;
+    }
+}
+
+function updateGameArea() {
+    var x, height, gap, minHeight, maxHeight, minGap, maxGap;
+    for (i = 0; i < myObstacles.length; i += 1) {
+        if (myGamePiece.crashWith(myObstacles[i])) {
+            if (window.localStorage.getItem("highscore") < myGameArea.frameNo) {
+                window.localStorage.setItem("highscore",myGameArea.frameNo);
+            }
+            return;
+        } 
+    }
+    myGameArea.clear();
+    myGameArea.frameNo += 1;
+    if (myGameArea.frameNo == 1 || everyinterval(250)) {
+        x = myGameArea.canvas.width;
+        minHeight = 10;
+        maxHeight = 500;
+        height = Math.floor(Math.random()*(maxHeight-minHeight+1)+minHeight);
+        minGap = 90;
+        maxGap = 120;
+        gap = Math.floor(Math.random()*(maxGap-minGap+1)+minGap);
+        myObstacles.push(new component(80, height, "#013adf", x, 0,"pipeNorth"));
+        myObstacles.push(new component(80, x - height - gap, "#00ffff", x, height + gap, "pipeSouth"));
+    }
+    for (i = 0; i < myObstacles.length; i += 1) {
+        myObstacles[i].x += -2;
+        myObstacles[i].update();
+    }
+    myScore.text="SCORE: " + myGameArea.frameNo;
+    myhighscore.text="HIGHSCORE:"+window.localStorage.getItem("highscore");
+    myScore.update();
+    myhighscore.update();
+    myGamePiece.newPos();
+    myGamePiece.update();
+}
+
+function everyinterval(n) {
+    if ((myGameArea.frameNo / n) % 1 == 0) {return true;}
+    return false;
+}
+
+function accelerate(n) {
+    myGamePiece.gravity = n;
+}
+
+
+
+</script>
+<br>
+
+<button class= "knopf" onkeydown="accelerate(-0.2)" onkeyup="accelerate(0.05)">Button</button>
+
+</html>
